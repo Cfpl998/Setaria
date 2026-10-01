@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf8f4">
+<meta name="description" content="狗尾草官网">
+<title>狗尾草官网</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['"PingFang SC"','"Hiragino Sans GB"','"Microsoft YaHei"','sans-serif'],mono:['"JetBrains Mono"','Consolas','monospace']}}}};
+</script>
+
+<!-- Live2D：PixiJS + Cubism Core + Cubism 4 runtime -->
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script>window.PIXI=window.PIXI||PIXI;</script>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;overflow-x:hidden;color:#514d49;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(circle at 7% 8%,rgba(246,225,228,.78),transparent 29%),radial-gradient(circle at 94% 88%,rgba(224,237,229,.80),transparent 33%),radial-gradient(circle at 52% 42%,rgba(255,255,255,.55),transparent 48%),#faf8f4}
+button{font-family:inherit}
+button:focus-visible{outline:2px solid rgba(112,143,125,.35);outline-offset:2px}
+
+.bg-orb{position:fixed;border-radius:999px;pointer-events:none;z-index:0;filter:blur(90px);opacity:.32;will-change:transform}
+.bg-orb.one{width:330px;height:330px;left:-120px;top:40px;background:#f2dfe1}
+.bg-orb.two{width:390px;height:390px;right:-150px;bottom:-70px;background:#deebe4}
+.bg-orb.three{width:270px;height:270px;left:45%;top:34%;background:#f5ece2;opacity:.19}
+
+/* ================= 液态玻璃升级版 ================= */
+.liquid-glass,.liquid-glass-strong{position:relative;isolation:isolate;overflow:hidden;backdrop-filter:blur(28px) saturate(1.22);-webkit-backdrop-filter:blur(28px) saturate(1.22)}
+.liquid-glass{background:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.25)),radial-gradient(circle at 12% 0%,rgba(255,255,255,.80),transparent 45%);border:1px solid rgba(255,255,255,.78);box-shadow:0 20px 55px rgba(72,65,59,.075),inset 0 1px 0 rgba(255,255,255,.96),inset 0 -1px 0 rgba(255,255,255,.20)}
+.liquid-glass-strong{background:linear-gradient(135deg,rgba(255,255,255,.80),rgba(255,255,255,.34)),radial-gradient(circle at 10% 0%,rgba(255,255,255,.92),transparent 48%);border:1px solid rgba(255,255,255,.88);box-shadow:0 26px 70px rgba(72,65,59,.10),inset 0 1px 0 rgba(255,255,255,.99),inset 0 -1px 0 rgba(255,255,255,.26);backdrop-filter:blur(34px) saturate(1.28);-webkit-backdrop-filter:blur(34px) saturate(1.28)}
+.liquid-glass::before,.liquid-glass-strong::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(115deg,rgba(255,255,255,.40),transparent 23%,rgba(255,255,255,.12) 48%,transparent 72%),radial-gradient(circle at 85% 105%,rgba(255,255,255,.22),transparent 35%);opacity:.95}
+.liquid-glass::after,.liquid-glass-strong::after{content:"";position:absolute;left:7%;right:7%;top:0;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.98),transparent);opacity:.90}
+
+.fade-up{opacity:0;transform:translateY(16px);animation:fadeUp .75s cubic-bezier(.22,1,.36,1) forwards}.delay1{animation-delay:.05s}.delay2{animation-delay:.12s}.delay3{animation-delay:.19s}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+
+/* ================= 可移动液态玻璃导航 ================= */
+#main-nav{padding:6px!important;gap:4px!important;border-radius:23px!important;box-shadow:0 24px 58px rgba(72,65,59,.105),inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(255,255,255,.24);touch-action:none;user-select:none;cursor:default;transition:box-shadow .35s ease,filter .35s ease,transform .18s ease}
+#main-nav::before{background:linear-gradient(110deg,rgba(255,255,255,.48),transparent 25%,rgba(255,255,255,.14) 50%,transparent 76%);animation:glassFlow 7s ease-in-out infinite}
+@keyframes glassFlow{0%,100%{transform:translateX(-5%);opacity:.72}50%{transform:translateX(5%);opacity:1}}
+#main-nav.long-pressing{box-shadow:0 30px 80px rgba(72,65,59,.15),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.32);filter:saturate(1.12)}
+#main-nav.nav-moving{cursor:grabbing;transform:scale(1.012) rotate(.15deg);box-shadow:0 34px 90px rgba(72,65,59,.18),inset 0 1px 0 #fff}
+.nav-hint{position:absolute;right:9px;bottom:-25px;font-size:9px;color:rgba(103,96,90,.48);opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#main-nav:hover .nav-hint{opacity:.75}
+
+.tab-btn{position:relative;color:#89817b;border:1px solid transparent;background:rgba(255,255,255,.09);transition:color .25s ease,background .25s ease,box-shadow .25s ease,border-color .25s ease,transform .28s cubic-bezier(.22,1.45,.36,1);backdrop-filter:blur(18px) saturate(1.16);-webkit-backdrop-filter:blur(18px) saturate(1.16);will-change:transform;z-index:2}
+.tab-btn::before{content:"";position:absolute;left:12%;right:12%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.96),transparent);pointer-events:none}
+.tab-btn:hover{color:#554e49;background:rgba(255,255,255,.42);border-color:rgba(255,255,255,.55);box-shadow:0 7px 20px rgba(70,63,58,.055),inset 0 1px 0 rgba(255,255,255,.78);transform:translateY(-1px)}
+.tab-btn.active{color:#4d4844;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,255,255,.45));border-color:rgba(255,255,255,.90);box-shadow:0 9px 24px rgba(70,63,58,.10),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.25);transform:translateY(-1px) scale(1.015)}
+.tab-btn.jelly{animation:tabJelly .62s cubic-bezier(.22,1.35,.36,1)}
+@keyframes tabJelly{0%{transform:scale(1)}22%{transform:scale(1.12,.88) rotate(-1deg)}43%{transform:scale(.93,1.07) rotate(1deg)}66%{transform:scale(1.04,.97)}100%{transform:scale(1.015)}}
+.tab-btn.dragging{opacity:.82;transform:scale(1.07) rotate(1.2deg);z-index:10;box-shadow:0 20px 35px rgba(70,63,58,.14)}
+.tab-btn.drop-left{box-shadow:-7px 0 0 rgba(255,255,255,.58),inset 0 1px 0 #fff}
+.tab-btn.drop-right{box-shadow:7px 0 0 rgba(255,255,255,.58),inset 0 1px 0 #fff}
+
+.tab-panel{display:none;transform-origin:50% 20%}.tab-panel.active{display:block;animation:panelJelly .52s cubic-bezier(.22,1.15,.36,1)}
+@keyframes panelJelly{0%{opacity:0;transform:translateY(13px) scale(.985,.94)}38%{opacity:1;transform:translateY(-3px) scale(1.012,1.025)}67%{transform:translateY(1px) scale(.996,.994)}100%{opacity:1;transform:none}}
+
+.glass-control{background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 8px 22px rgba(70,63,58,.055);backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15)}
+.store-badge{background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,255,255,.32));border:1px solid rgba(255,255,255,.84);box-shadow:0 11px 28px rgba(70,63,58,.055),inset 0 1px 0 rgba(255,255,255,.98);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.content-glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.81),rgba(255,255,255,.38))!important;border:1px solid rgba(255,255,255,.90)!important;box-shadow:0 26px 68px rgba(72,65,59,.095),inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(255,255,255,.25)!important;backdrop-filter:blur(32px) saturate(1.22);-webkit-backdrop-filter:blur(32px) saturate(1.22)}
+.code-window{overflow:hidden;background:rgba(255,255,255,.20)}
+.window-head{height:44px;display:flex;align-items:center;gap:7px;padding:0 15px;background:rgba(255,255,255,.24);border-bottom:1px solid rgba(255,255,255,.60);box-shadow:inset 0 1px 0 rgba(255,255,255,.74);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.dot{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}.dot.r{background:#e6b5b5}.dot.y{background:#e7d39f}.dot.g{background:#b8d7c1}
+.code-body{min-height:190px;padding:17px 18px;background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.04))}
+
+/* ================= 看板娘 ================= */
+#chieri-dock{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:60;pointer-events:none;width:390px;height:570px;--dock-scale:1}
+.chieri-shell{width:100%;height:100%;position:relative;overflow:hidden;border-radius:34px;pointer-events:auto;isolation:isolate}
+.chieri-shell::before{content:"";position:absolute;width:250px;height:250px;left:50%;top:42%;transform:translate(-50%,-50%);border-radius:50%;background:rgba(245,222,225,.62);filter:blur(58px);z-index:-1}
+.chieri-shell::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(125deg,rgba(255,255,255,.25),transparent 30%,rgba(255,255,255,.08) 64%,transparent 82%);box-shadow:inset 0 1px 0 rgba(255,255,255,.98);z-index:4}
+.chieri-dragbar{position:absolute;left:42px;right:74px;top:0;height:46px;z-index:8;cursor:grab;touch-action:none}.chieri-dragbar:active{cursor:grabbing}
+.chieri-resize{position:absolute;left:0;top:0;width:42px;height:42px;z-index:12;cursor:nwse-resize;touch-action:none}.chieri-resize::before{content:"";position:absolute;left:9px;top:9px;width:16px;height:16px;border-left:2px solid rgba(91,84,78,.40);border-top:2px solid rgba(91,84,78,.40);border-radius:8px 0 0 0;opacity:.72}.chieri-resize::after{content:"";position:absolute;left:13px;top:13px;width:9px;height:9px;border-left:1px solid rgba(255,255,255,.96);border-top:1px solid rgba(255,255,255,.96);border-radius:5px 0 0 0}
+.chieri-inner{position:absolute;inset:7px;border-radius:28px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.30),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.76)}
+#chieri-canvas{width:100%;height:100%;display:block;position:absolute;inset:0;z-index:2}
+.chieri-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:35px;color:#948c85;font-size:12px;line-height:1.9;background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.73),transparent 44%),linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.03));z-index:1}.chieri-placeholder.hidden{display:none}
+.chieri-name{position:absolute;right:15px;top:13px;padding:6px 10px;border-radius:999px;color:rgba(91,84,78,.66);background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.70);box-shadow:inset 0 1px 0 rgba(255,255,255,.90),0 5px 15px rgba(70,62,58,.04);font-size:10px;opacity:.92;z-index:7;backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+.chieri-bubble{position:absolute;right:15px;bottom:50px;max-width:215px;padding:9px 13px;border-radius:16px 16px 5px 16px;color:#69615b;background:linear-gradient(135deg,rgba(255,255,255,.79),rgba(255,255,255,.44));border:1px solid rgba(255,255,255,.86);box-shadow:0 11px 27px rgba(70,62,58,.075),inset 0 1px 0 rgba(255,255,255,.94);backdrop-filter:blur(18px) saturate(1.16);-webkit-backdrop-filter:blur(18px) saturate(1.16);font-size:11px;line-height:1.55;opacity:.95;transition:opacity .25s ease,transform .25s ease;z-index:7}
+.chieri-source{position:absolute;left:15px;bottom:13px;max-width:calc(100% - 30px);padding:5px 10px;border-radius:999px;color:rgba(91,84,78,.62);background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.84),0 5px 16px rgba(70,62,58,.045);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);font-size:9px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:7}
+.chieri-toggle{position:absolute;top:10px;left:10px;width:26px;height:26px;border:1px solid rgba(255,255,255,.76);border-radius:50%;background:rgba(255,255,255,.54);color:rgba(75,68,63,.64);font-size:13px;line-height:23px;text-align:center;cursor:pointer;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.90),0 4px 12px rgba(70,62,58,.05);z-index:15}
+.chieri-error{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78%;padding:12px 14px;border-radius:16px;text-align:center;font-size:10px;line-height:1.7;color:#786f69;background:rgba(255,255,255,.64);border:1px solid rgba(255,255,255,.78);backdrop-filter:blur(16px);z-index:10;display:none}.chieri-error.show{display:block}
+#chieri-dock.collapsed{width:68px;height:68px;top:auto;right:20px;bottom:20px;transform:none}.collapsed .chieri-bubble,.collapsed .chieri-source,.collapsed .chieri-name{display:none}.collapsed .chieri-toggle{top:5px;left:5px}.collapsed .chieri-inner{inset:4px;border-radius:20px}.collapsed #chieri-canvas{display:none}
+
+/* 移动端 */
+@media(max-width:900px){#chieri-dock{right:13px;top:auto;bottom:15px;transform:none;width:285px;height:420px}.chieri-shell{border-radius:28px}.chieri-inner{border-radius:23px}.chieri-bubble{right:10px;bottom:42px;max-width:170px;padding:7px 10px;font-size:9px}.chieri-source{left:10px;bottom:8px;font-size:8px}.chieri-name{right:10px;top:10px;font-size:9px}}
+@media(max-width:520px){#chieri-dock{width:240px;height:350px;right:10px;bottom:10px}.chieri-dragbar{right:60px;height:38px}.chieri-resize{width:33px;height:33px}.chieri-bubble{right:8px;bottom:37px;max-width:145px;padding:6px 9px;font-size:8px}.chieri-source{font-size:7px;padding:4px 7px}.chieri-name{display:none}#chieri-dock.collapsed{width:55px;height:55px;right:10px;bottom:10px}}
+
+/* 移动导航拖动后的提示与果冻状态 */
+.nav-ghost{position:fixed;z-index:200;pointer-events:none;display:none;padding:9px 14px;border-radius:16px;background:rgba(255,255,255,.70);border:1px solid rgba(255,255,255,.86);box-shadow:0 20px 50px rgba(70,63,58,.14),inset 0 1px 0 #fff;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);font-size:12px;color:#5e5752}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ================= 2026-10 看板娘与液态玻璃优化 ================= */
+.liquid-glass,
+.liquid-glass-strong,
+.content-glass,
+#main-nav,
+.glass-control{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.70),rgba(255,255,255,.25)),
+    radial-gradient(circle at 18% 0%,rgba(255,255,255,.80),transparent 42%),
+    radial-gradient(circle at 100% 100%,rgba(226,239,231,.16),transparent 44%);
+  border-color:rgba(255,255,255,.76);
+  box-shadow:
+    0 20px 55px rgba(67,61,56,.075),
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 -1px 0 rgba(255,255,255,.20),
+    inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.liquid-glass::before,
+.liquid-glass-strong::before,
+.content-glass::before,
+#main-nav::before{
+  background:
+    linear-gradient(112deg,
+      rgba(255,255,255,.44) 0%,
+      transparent 22%,
+      rgba(255,255,255,.10) 43%,
+      transparent 64%,
+      rgba(255,255,255,.18) 100%);
+  opacity:.72;
+  animation:liquidReflection 8s ease-in-out infinite;
+}
+@keyframes liquidReflection{
+  0%,100%{transform:translateX(-7%) scaleX(.98);opacity:.60}
+  50%{transform:translateX(7%) scaleX(1.02);opacity:.90}
+}
+#main-nav{overflow:visible;transform-origin:center}
+#main-nav.long-pressing{
+  animation:navJellyHold .75s cubic-bezier(.22,1.35,.36,1) infinite alternate;
+}
+@keyframes navJellyHold{
+  from{transform:scale(1) rotate(-.08deg)}
+  to{transform:scale(1.018,.982) rotate(.08deg)}
+}
+.tab-btn.jelly{animation:tabJelly .62s cubic-bezier(.22,1.55,.36,1)}
+@keyframes tabJelly{
+  0%{transform:scale(.88,.96);filter:saturate(.95)}
+  28%{transform:scale(1.10,.91)}
+  52%{transform:scale(.96,1.06)}
+  72%{transform:scale(1.035,.98)}
+  100%{transform:scale(1,1);filter:saturate(1)}
+}
+.tab-btn.active{
+  box-shadow:
+    0 10px 24px rgba(70,63,58,.09),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(255,255,255,.24),
+    0 0 0 1px rgba(255,255,255,.18);
+}
+#chieri-dock{right:8px}
+@media(max-width:900px){#chieri-dock{right:7px}}
+@media(max-width:520px){#chieri-dock{right:4px}}
+.chieri-bubble{
+  left:58%;
+  right:auto;
+  top:31%;
+  bottom:auto;
+  max-width:42%;
+  padding:8px 11px 8px 12px;
+  border-radius:18px 18px 18px 7px;
+  color:rgba(86,78,73,.82);
+  background:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.30));
+  border:1px solid rgba(255,255,255,.66);
+  box-shadow:
+    0 8px 22px rgba(67,60,55,.055),
+    inset 0 1px 0 rgba(255,255,255,.90);
+  backdrop-filter:blur(15px) saturate(1.10);
+  -webkit-backdrop-filter:blur(15px) saturate(1.10);
+  font-size:10px;
+  line-height:1.5;
+  letter-spacing:.01em;
+  transform-origin:left center;
+  z-index:9;
+}
+.chieri-bubble::before{
+  content:"";
+  position:absolute;
+  left:10px;
+  bottom:-5px;
+  width:11px;
+  height:9px;
+  background:rgba(255,255,255,.46);
+  border-left:1px solid rgba(255,255,255,.58);
+  border-bottom:1px solid rgba(255,255,255,.58);
+  transform:skewX(-24deg) rotate(-18deg);
+  border-radius:0 0 0 7px;
+}
+.chieri-bubble::after{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:7px;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 0 8px rgba(255,255,255,.75);
+}
+@media(max-width:900px){
+  .chieri-bubble{
+    left:57%;
+    top:31%;
+    max-width:43%;
+    padding:7px 9px 7px 10px;
+    font-size:9px;
+  }
+}
+@media(max-width:520px){
+  .chieri-bubble{
+    left:56%;
+    top:30%;
+    max-width:45%;
+    padding:6px 8px 6px 9px;
+    font-size:8px;
+  }
+}
+#chieri-canvas{touch-action:none}
+
+</style>
+</head>
+
+<body>
+<div class="bg-orb one"></div><div class="bg-orb two"></div><div class="bg-orb three"></div>
+
+<main class="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:py-16 md:py-20">
+<section class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+<div class="flex-1 w-full">
+
+<div class="fade-up delay1">
+<div class="store-badge inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 mb-5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b8d7c1]"></span><span class="text-xs text-[#8b847e]">狗尾草 · 官方小站</span>
+</div>
+<h1 class="text-[clamp(2.3rem,7vw,4rem)] font-medium tracking-[.04em] text-[#45413e] leading-tight mb-5">狗尾草官网</h1>
+<p class="text-[clamp(1rem,2vw,1.15rem)] text-[#817a74] leading-8 max-w-xl mb-8">平凡小店晚风温柔，<br class="hidden sm:block">所有甜恋与相遇都在此生根发芽。</p>
+</div>
+
+<nav id="main-nav" class="liquid-glass rounded-2xl p-1.5 inline-flex flex-wrap gap-1 mb-8 fade-up delay2" aria-label="主导航">
+<button class="tab-btn active px-4 sm:px-5 py-2.5 rounded-xl text-sm" data-tab="home">首页</button>
+<button class="tab-btn px-4 sm:px-5 py-2.5 rounded-xl text-sm" data-tab="about">关于小店</button>
+<button class="tab-btn px-4 sm:px-5 py-2.5 rounded-xl text-sm" data-tab="tech">技术栈</button>
+<button class="tab-btn px-4 sm:px-5 py-2.5 rounded-xl text-sm" data-tab="contact">联系我们</button>
+<span class="nav-hint">长按空白玻璃区域可移动</span>
+</nav>
+
+<section id="home" class="tab-panel active">
+<div class="content-glass rounded-3xl p-6 sm:p-7 max-w-xl">
+<div class="flex items-center justify-between mb-5"><div><div class="text-xs text-[#9a938d] mb-1">TODAY</div><div class="text-lg font-medium text-[#5a5551]">欢迎来到狗尾草</div></div><div class="glass-control w-10 h-10 rounded-2xl flex items-center justify-center text-[#8c8580]" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" stroke="currentColor" stroke-width="1.4"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z" stroke="currentColor" stroke-width="1.2"/></svg></div></div>
+<p class="text-sm leading-7 text-[#817b76]">这里是一个安静的小角落。<br>写代码、做喜欢的东西，也记录一些平凡又温柔的日常。</p>
+</div>
+</section>
+
+<section id="about" class="tab-panel">
+<div class="content-glass rounded-3xl p-6 sm:p-7 max-w-xl"><div class="text-xs text-[#9a938d] mb-2">ABOUT</div><h2 class="text-xl font-medium text-[#5a5551] mb-4">关于狗尾草</h2><p class="text-sm text-[#817b76] leading-8">狗尾草不是一家喧闹的店。<br>这里只想留下舒服、简单、有一点温度的东西。<br>希望每一个来到这里的人，都可以慢下来一点。</p></div>
+</section>
+
+<section id="tech" class="tab-panel">
+<div class="content-glass rounded-3xl overflow-hidden max-w-xl"><div class="code-window"><div class="window-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="ml-3 text-xs text-[#918a84] font-mono" id="lang-label">python</span></div><pre class="code-body font-mono text-xs sm:text-sm leading-6 text-[#625d58] overflow-hidden"><code id="code-display"></code></pre></div></div>
+<div class="flex flex-wrap gap-2.5 mt-5 max-w-xl"><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">Python</span><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">C</span><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">Lua</span><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">Go</span><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">JavaScript</span><span class="liquid-glass px-3.5 py-1.5 rounded-full text-xs">PHP</span></div>
+</section>
+
+<section id="contact" class="tab-panel">
+<div class="content-glass rounded-3xl p-6 sm:p-7 max-w-xl"><div class="text-xs text-[#9a938d] mb-2">CONTACT</div><h2 class="text-xl font-medium text-[#5a5551] mb-4">联系我们</h2><p class="text-sm text-[#817b76] leading-8">如果你有任何想说的话，<br>可以通过你设置的联系方式与我取得联系。</p><button onclick="showContactMessage()" class="glass-control mt-5 px-5 py-2.5 rounded-xl text-sm text-[#625b56] transition hover:bg-white/70">获取联系方式</button></div>
+</section>
+</div></section>
+<footer class="mt-16 sm:mt-20 text-center text-xs text-[#a29b95]">© 2026 狗尾草 · Keep something gentle.</footer>
+</main>
+
+<!-- ================= 千绘莉 Live2D ================= -->
+<div id="chieri-dock">
+<div class="chieri-shell liquid-glass-strong">
+<div class="chieri-resize" id="chieri-resize" title="拖动左上角调整大小" aria-label="调整看板娘大小"></div>
+<div class="chieri-dragbar" id="chieri-dragbar" title="拖动这里移动看板娘" aria-label="移动看板娘"></div>
+<button class="chieri-toggle" id="chieri-toggle" aria-label="收起看板娘" title="收起">−</button>
+<div class="chieri-name" id="chieri-name">千绘莉</div>
+<div class="chieri-inner">
+<canvas id="chieri-canvas"></canvas>
+<div id="chieri-placeholder" class="chieri-placeholder"><div><div class="text-[#716b66] text-sm mb-2">千绘莉</div><div>Live2D 模型加载中…</div></div></div>
+<div id="chieri-error" class="chieri-error"></div>
+</div>
+<div class="chieri-bubble" id="chieri-bubble">欢迎来到狗尾草～</div>
+<div class="chieri-source" id="chieri-source">模型来源 · B站 · 千绘莉模型作者</div>
+</div>
+</div>
+<div id="nav-ghost" class="nav-ghost"></div>
+
+<script>
+/* ================= 配置 ================= */
+const CHIERI_CONFIG={
+  NAME:"千绘莉",
+  SOURCE_TEXT:"模型来源 · B站 · 千绘莉模型作者",
+  MODEL_URL:"./qianhuili1.4/qianhuili.model3.json"
+};
+
+document.getElementById('chieri-name').textContent=CHIERI_CONFIG.NAME;
+document.getElementById('chieri-source').textContent=CHIERI_CONFIG.SOURCE_TEXT;
+
+/* ================= Tab + 果冻切换 ================= */
+const nav=document.getElementById('main-nav');
+const buttons=[...nav.querySelectorAll('.tab-btn')];
+const panels=[...document.querySelectorAll('.tab-panel')];
+let activeTab='home';
+
+function switchTab(target,animate=true){
+  if(!target||target===activeTab)return;
+  activeTab=target;
+  buttons.forEach(btn=>{
+    const on=btn.dataset.tab===target;
+    btn.classList.toggle('active',on);
+    if(on&&animate){btn.classList.remove('jelly');void btn.offsetWidth;btn.classList.add('jelly');setTimeout(()=>btn.classList.remove('jelly'),650)}
+  });
+  panels.forEach(panel=>{
+    const on=panel.id===target;
+    panel.classList.toggle('active',on);
+    if(on&&animate){panel.classList.remove('active');void panel.offsetWidth;panel.classList.add('active')}
+  });
+}
+
+/* ================= 导航长按移动 =================
+   1. 普通点击：切换页面
+   2. 长按导航空白玻璃：移动整个导航
+   3. 长按某个 Tab：进入排序模式，可左右拖动 Tab
+*/
+let navDrag=null;
+let reorder=null;
+let longTimer=null;
+let suppressClick=false;
+const LONG=430;
+
+function point(e){return{x:e.clientX,y:e.clientY}}
+function clearLong(){if(longTimer){clearTimeout(longTimer);longTimer=null}}
+function navRectToLeftTop(rect){
+  nav.style.position='fixed';
+  nav.style.left=rect.left+'px';nav.style.top=rect.top+'px';nav.style.right='auto';nav.style.bottom='auto';nav.style.margin='0';
+}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+
+nav.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  const btn=e.target.closest('.tab-btn');
+  const rect=nav.getBoundingClientRect();
+  const p=point(e);
+  clearLong();
+  longTimer=setTimeout(()=>{
+    nav.classList.add('long-pressing');
+    if(btn){
+      reorder={id:e.pointerId,btn,startX:p.x,startY:p.y,origLeft:btn.getBoundingClientRect().left,moved:false};
+      btn.classList.add('dragging');
+    }else{
+      navRectToLeftTop(rect);
+      navDrag={id:e.pointerId,startX:p.x,startY:p.y,left:rect.left,top:rect.top,moved:false};
+      nav.classList.add('nav-moving');
+    }
+    nav.setPointerCapture?.(e.pointerId);
+    suppressClick=true;
+  },LONG);
+});
+
+nav.addEventListener('pointermove',e=>{
+  if(navDrag&&e.pointerId===navDrag.id){
+    const dx=e.clientX-navDrag.startX,dy=e.clientY-navDrag.startY;
+    if(Math.abs(dx)+Math.abs(dy)>4)navDrag.moved=true;
+    nav.style.left=clamp(navDrag.left+dx,6,Math.max(6,innerWidth-nav.offsetWidth-6))+'px';
+    nav.style.top=clamp(navDrag.top+dy,6,Math.max(6,innerHeight-nav.offsetHeight-6))+'px';
+    e.preventDefault();return;
+  }
+  if(reorder&&e.pointerId===reorder.id){
+    const dx=e.clientX-reorder.startX;
+    if(Math.abs(dx)>5)reorder.moved=true;
+    const all=[...nav.querySelectorAll('.tab-btn')];
+    const current=reorder.btn;
+    current.classList.remove('drop-left','drop-right');
+    for(const other of all){
+      if(other===current)continue;
+      const r=other.getBoundingClientRect();
+      if(e.clientX<r.left+r.width/2&&e.clientX>r.left-20){other.classList.add('drop-left');nav.insertBefore(current,other);break}
+      if(e.clientX>r.left+r.width/2&&e.clientX<r.right+20){other.classList.add('drop-right');nav.insertBefore(current,other.nextSibling);break}
+    }
+    e.preventDefault();
+  }
+});
+
+function endNavPointer(e){
+  clearLong();
+  if(navDrag&&e.pointerId===navDrag.id){navDrag=null;nav.classList.remove('nav-moving','long-pressing');setTimeout(()=>suppressClick=false,80)}
+  if(reorder&&e.pointerId===reorder.id){
+    const btn=reorder.btn;btn.classList.remove('dragging','drop-left','drop-right');reorder=null;nav.classList.remove('long-pressing');setTimeout(()=>suppressClick=false,80)
+  }
+}
+nav.addEventListener('pointerup',endNavPointer);nav.addEventListener('pointercancel',endNavPointer);nav.addEventListener('pointerleave',()=>{if(!navDrag&&!reorder)clearLong()});
+
+buttons.forEach(btn=>btn.addEventListener('click',e=>{
+  if(suppressClick){e.preventDefault();e.stopPropagation();return}
+  switchTab(btn.dataset.tab,true);
+}));
+
+/* ================= 代码动画 ================= */
+const codeDisplay=document.getElementById('code-display'),langLabel=document.getElementById('lang-label');
+const snippets=[`# 狗尾草小店记录\nclass SweetStore:\n    def __init__(self):\n        self.name = "狗尾草"\n        self.warmth = "满格"\n\n    def welcome(self, guest):\n        return f"欢迎光临，{guest}"\n`,`// 晚风温柔模块\n#include <stdio.h>\n\nint main() {\n    char store[] = "狗尾草";\n    printf("欢迎来到 %s\\n", store);\n    return 0;\n}\n`,`-- 相遇系统\nlocal store = {}\nstore.name = "狗尾草"\n\nfunction store.meet(you)\n    return "甜恋开始了"\nend\n`,`// 狗尾草主程序\npackage main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("平凡小店，岁岁温柔")\n}\n`];
+const langs=['python','c','lua','go'];let snippetIndex=0,charIndex=0,deleting=false;
+function typeCode(){const current=snippets[snippetIndex];langLabel.textContent=langs[snippetIndex];if(!deleting){codeDisplay.textContent=current.substring(0,charIndex+1);charIndex++;if(charIndex>=current.length){deleting=true;return setTimeout(typeCode,1500)}}else{codeDisplay.textContent=current.substring(0,Math.max(0,charIndex-1));charIndex--;if(charIndex<=0){charIndex=0;deleting=false;snippetIndex=(snippetIndex+1)%snippets.length}}setTimeout(typeCode,deleting?25:43)}
+setTimeout(typeCode,900);
+
+/* ================= 欢迎语 ================= */
+const bubble=document.getElementById('chieri-bubble');
+const greetings=['欢迎来到狗尾草～','今天也要开心一点哦。','这里的晚风很温柔呢。','欢迎光临。','慢慢逛，不着急。','希望你会喜欢这里。'];let greetingIndex=0;
+setInterval(()=>{bubble.style.opacity='0';bubble.style.transform='translateY(3px) scale(.97)';setTimeout(()=>{greetingIndex=(greetingIndex+1)%greetings.length;bubble.textContent=greetings[greetingIndex];bubble.style.opacity='.95';bubble.style.transform='translateY(0) scale(1)'},220)},5000);
+function showContactMessage(){alert('请在这里替换成你的邮箱、QQ、Telegram 或其他联系方式。')}
+
+/* ================= 看板娘收起 ================= */
+const dock=document.getElementById('chieri-dock'),toggle=document.getElementById('chieri-toggle');
+toggle.addEventListener('click',e=>{e.stopPropagation();dock.classList.toggle('collapsed');const c=dock.classList.contains('collapsed');toggle.textContent=c?'+':'−';toggle.title=c?'展开':'收起';toggle.setAttribute('aria-label',c?'展开看板娘':'收起看板娘');if(!c)resizeLive2D()});
+toggle.addEventListener('pointerdown',e=>e.stopPropagation());
+
+/* ================= 看板娘拖动/左上角缩放 ================= */
+const dragbar=document.getElementById('chieri-dragbar'),resizeHandle=document.getElementById('chieri-resize');let drag=null,resizeState=null;
+function fixDockPosition(){const r=dock.getBoundingClientRect();dock.style.left=r.left+'px';dock.style.top=r.top+'px';dock.style.right='auto';dock.style.bottom='auto';dock.style.transform='none';return r}
+dragbar.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0||dock.classList.contains('collapsed'))return;const r=fixDockPosition();drag={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top};dragbar.setPointerCapture?.(e.pointerId);e.preventDefault()});
+dragbar.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;dock.style.left=clamp(drag.left+e.clientX-drag.x,6,Math.max(6,innerWidth-dock.offsetWidth-6))+'px';dock.style.top=clamp(drag.top+e.clientY-drag.y,6,Math.max(6,innerHeight-dock.offsetHeight-6))+'px';e.preventDefault()});
+dragbar.addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id){dragbar.releasePointerCapture?.(e.pointerId);drag=null}});dragbar.addEventListener('pointercancel',()=>drag=null);
+resizeHandle.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0||dock.classList.contains('collapsed'))return;const r=fixDockPosition();resizeState={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};resizeHandle.setPointerCapture?.(e.pointerId);e.preventDefault();e.stopPropagation()});
+resizeHandle.addEventListener('pointermove',e=>{if(!resizeState||e.pointerId!==resizeState.id)return;const dx=e.clientX-resizeState.x,dy=e.clientY-resizeState.y;const minW=innerWidth<=520?210:250,minH=innerWidth<=520?300:350,maxW=Math.min(560,innerWidth-20),maxH=Math.min(760,innerHeight-20);const w=clamp(resizeState.width-dx,minW,maxW),h=clamp(resizeState.height-dy,minH,maxH);dock.style.width=w+'px';dock.style.height=h+'px';dock.style.left=clamp(resizeState.left+resizeState.width-w,6,Math.max(6,innerWidth-w-6))+'px';dock.style.top=clamp(resizeState.top+resizeState.height-h,6,Math.max(6,innerHeight-h-6))+'px';resizeLive2D();e.preventDefault()});
+resizeHandle.addEventListener('pointerup',e=>{if(resizeState&&e.pointerId===resizeState.id){resizeHandle.releasePointerCapture?.(e.pointerId);resizeState=null}});resizeHandle.addEventListener('pointercancel',()=>resizeState=null);
+window.addEventListener('resize',()=>{if(dock.classList.contains('collapsed'))return;const r=dock.getBoundingClientRect();if(dock.style.left){dock.style.left=clamp(r.left,6,Math.max(6,innerWidth-r.width-6))+'px';dock.style.top=clamp(r.top,6,Math.max(6,innerHeight-r.height-6))+'px'}resizeLive2D()});
+
+/* ================= Live2D ================= */
+const canvas=document.getElementById('chieri-canvas'),placeholder=document.getElementById('chieri-placeholder'),errorBox=document.getElementById('chieri-error');
+let liveApp=null,liveModel=null;
+function showLiveError(msg){errorBox.textContent=msg;errorBox.classList.add('show');placeholder.classList.add('hidden');console.error(msg)}
+function resizeLive2D(){if(!liveApp||!liveModel)return;const host=document.querySelector('.chieri-inner');const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);liveApp.renderer.resize(w,h);fitLiveModel(w,h)}
+function fitLiveModel(w,h){if(!liveModel)return;const b=liveModel.getLocalBounds();if(!b.width||!b.height)return;const scale=Math.min((w*.92)/b.width,(h*1.04)/b.height);liveModel.scale.set(scale);liveModel.x=w*.58;liveModel.y=h+6}
+async function initChieriLive2D(){
+  try{
+    if(!window.PIXI)throw new Error('PixiJS 未加载');
+    if(!window.PIXI.live2d||!window.PIXI.live2d.Live2DModel)throw new Error('Live2D Cubism 4 Runtime 未加载');
+    liveApp=new PIXI.Application({view:canvas,transparent:true,antialias:true,autoStart:true,resolution:Math.min(devicePixelRatio||1,2),backgroundAlpha:0});
+    liveModel=await PIXI.live2d.Live2DModel.from(CHIERI_CONFIG.MODEL_URL,{autoInteract:false,autoUpdate:true});
+    liveModel.anchor.set(.5,1);
+    liveModel.interactive=true;
+    liveModel.cursor='default';
+    liveApp.stage.addChild(liveModel);
+    placeholder.classList.add('hidden');
+    resizeLive2D();
+
+    /* 点击角色仍然可以触发命中区域，但视线跟随改为全页面 */
+    liveModel.on('hit',areas=>{
+      if(Array.isArray(areas)&&areas.length){
+        bubble.textContent='嗯？你在叫我吗～';
+      }
+    });
+
+    canvas.addEventListener('pointerdown',()=>{
+      bubble.textContent='被发现啦～';
+    });
+
+    /* 鼠标/手指在网页任何位置移动，千绘莉都会平滑看向指针 */
+    const updateGlobalFocus = (event)=>{
+      if(!liveModel || dock.classList.contains('collapsed')) return;
+      const rect=canvas.getBoundingClientRect();
+      const x=event.clientX-rect.left;
+      const y=event.clientY-rect.top;
+      liveModel.focus(x,y);
+    };
+    document.addEventListener('pointermove',updateGlobalFocus,{passive:true});
+    document.addEventListener('pointerdown',event=>{
+      if(event.pointerType==='touch' || event.pointerType==='pen'){
+        updateGlobalFocus(event);
+      }
+    },{passive:true});
+  }catch(err){
+    showLiveError('Live2D 加载失败：请确认网站目录中的 qianhuili1.4 文件夹完整，并通过 HTTP/HTTPS 打开页面。');
+  }
+}
+initChieriLive2D();
+</script>
+</body>
+</html>

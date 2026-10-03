@@ -230,7 +230,7 @@
     "buttonUrl": "https://example.com/"
   },
   "ticket": {
-    "open": true,
+    "open": false,
     "password": "12345",
     "title": "访问验证",
     "subtitle": "请输入访问密码",

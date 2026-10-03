@@ -1,0 +1,173 @@
+{
+  "sites": [
+    {
+      "id": "site_000",
+      "name": "写真美图",
+      "url": "https://www.hentaiclub.net/",
+      "category": "写真",
+      "description": "绅士聚合之地",
+      "icon": "@"
+    },
+    {
+      "id": "site_001",
+      "name": "写真美图1",
+      "url": "https://xx.knit.bid/zh-hant/",
+      "category": "写真",
+      "description": "高质量Cosplay与写真图集资源站",
+      "icon": "◆"
+    },
+    {
+      "id": "site_002",
+      "name": "写真美图2",
+      "url": "https://www.acgxmh.com/cos/",
+      "category": "写真",
+      "description": "ACG与Cosplay写真合集",
+      "icon": "◇"
+    },
+    {
+      "id": "site_003",
+      "name": "写真美图3",
+      "url": "https://www.tuzac.com/tags/cosplay",
+      "category": "写真",
+      "description": "专注Cosplay标签的美图分享",
+      "icon": "●"
+    },
+    {
+      "id": "site_004",
+      "name": "写真美图4",
+      "url": "https://www.emonl.com/",
+      "category": "写真",
+      "description": "精选Cosplay与角色扮演写真",
+      "icon": "○"
+    },
+    {
+      "id": "site_005",
+      "name": "写真美图5",
+      "url": "https://coserslove.com/",
+      "category": "写真",
+      "description": "Coser作品与写真专题站",
+      "icon": "■"
+    },
+    {
+      "id": "site_006",
+      "name": "写真美图6",
+      "url": "https://xchina.co/photos/tag/cosplay",
+      "category": "写真",
+      "description": "Cosplay主题相册与图片库",
+      "icon": "□"
+    },
+    {
+      "id": "site_007",
+      "name": "写真美图7",
+      "url": "https://kireicosplay.com/?ref=porndude",
+      "category": "写真",
+      "description": "精美Cosplay写真资源",
+      "icon": "▲"
+    },
+    {
+      "id": "site_008",
+      "name": "写真美图8",
+      "url": "https://mitaku.net/category/ero-cosplay/",
+      "category": "写真",
+      "description": "Ero Cosplay分类图集",
+      "icon": "△"
+    },
+    {
+      "id": "site_009",
+      "name": "asmr",
+      "url": "https://r18.pro/?lang=chinese",
+      "category": "asmr",
+      "description": "中文ASMR音频与作品合集",
+      "icon": "♪"
+    },
+    {
+      "id": "site_010",
+      "name": "asmr2",
+      "url": "https://www.asmr.one/works",
+      "category": "asmr",
+      "description": "ASMR作品在线收听平台",
+      "icon": "♫"
+    },
+    {
+      "id": "site_011",
+      "name": "写真美图9",
+      "url": "https://www.ffomu.com/zh-HK/photograph/type/cosplay/1",
+      "category": "写真",
+      "description": "Cosplay摄影写真专题",
+      "icon": "★"
+    },
+    {
+      "id": "site_012",
+      "name": "写真美图10",
+      "url": "https://e-hentai.org/cosplay",
+      "category": "写真",
+      "description": "Cosplay相关图集与资源",
+      "icon": "☆"
+    },
+    {
+      "id": "site_013",
+      "name": "写真美图11",
+      "url": "https://cosplaytele.com/best-cosplayer/",
+      "category": "写真",
+      "description": "优秀Cosplayer作品推荐",
+      "icon": "✦"
+    },
+    {
+      "id": "site_014",
+      "name": "写真美图12",
+      "url": "https://avple.tv/search?key=Cosplay&page=1&sort=date",
+      "category": "写真",
+      "description": "Cosplay相关视频与图片搜索",
+      "icon": "✧"
+    },
+    {
+      "id": "site_015",
+      "name": "写真美图13",
+      "url": "https://8se.me/photos/album-5/1.html",
+      "category": "写真",
+      "description": "写真相册与Cosplay图集",
+      "icon": "◉"
+    }
+  ],
+  "proxies": [
+    {
+      "id": "proxy_001",
+      "name": "香港线路",
+      "type": "http",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "username": "",
+      "password": "",
+      "enabled": true
+    },
+    {
+      "id": "proxy_002",
+      "name": "SOCKS5线路",
+      "type": "socks",
+      "host": "127.0.0.1",
+      "port": 1080,
+      "username": "",
+      "password": "",
+      "enabled": true
+    }
+  ],
+  "announcement": {
+    "open": true,
+    "title": "瑰境导航公告",
+    "content": "欢迎使用瑰境导航。\n务必加入tg频道(防止服务器出错导致无法运行)@mu0721或者加入qq群1127978865(里面有更多软件)\n瑰境提供优质网站推荐，玩的愉快",
+    "buttonText": "知道了",
+    "buttonUrl": "",
+    "allowClose": true
+  },
+  "update": {
+    "open": false,
+    "minRunVersion": "1.0",
+    "latestVersion": "1.1",
+    "forceBelowMin": false,
+    "forceAll": false,
+    "title": "瑰境导航发现新版本",
+    "content": "本次更新修复已知问题并优化稳定性。\n\n更新内容：\n1. 修复收藏页语法错误。\n2. 优化远程 JSON 加载。\n3. 优化导航体验。",
+    "buttonText": "立即更新",
+    "buttonUrl": "https://example.com/guijing.apk"
+  }
+}

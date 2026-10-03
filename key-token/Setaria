@@ -1,0 +1,239 @@
+{
+  "apps": [
+    {
+      "id": "app_001",
+      "name": "MT管理器",
+      "package": "bin.mt.plus",
+      "version": "2.26.9",
+      "size": "34.83MB",
+      "category": "工具",
+      "icon": "https://i.imgs.ovh/2026/10/01/05f4934d943755a702a932a49a0a271c.jpg",
+      "screenshots": [
+        "https://cdn.binmt.cc/doc/guide/file/index.webp"
+      ],
+      "description": "这是一款文件管理软件，远超与系统管理器，方便日常使用。",
+      "updateLog": "v1.0.0\n首次发布。",
+      "tags": [
+        "工具",
+        "实用",
+        "示例"
+      ],
+      "browserUrl": "https://pan.mt2.cn/apk/26091198",
+      "downloadUrl": "https://pan.mt2.cn/apk/26091198"
+    },
+    {
+      "id": "app_002",
+      "name": "示例音乐播放器",
+      "package": "com.example.music",
+      "version": "2.1.0",
+      "size": "35MB",
+      "category": "影音",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例音乐播放器，支持本地音乐播放、在线搜索、歌词显示等功能。",
+      "updateLog": "v2.1.0\n优化播放性能。\nv2.0.0\n全新 UI 设计。",
+      "tags": [
+        "音乐",
+        "播放器",
+        "影音"
+      ],
+      "browserUrl": "https://example.com/download/music.apk",
+      "downloadUrl": "https://example.com/download/music.apk"
+    },
+    {
+      "id": "app_003",
+      "name": "示例聊天软件",
+      "package": "com.example.chat",
+      "version": "8.0.3",
+      "size": "88MB",
+      "category": "社交",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例聊天软件，支持文字、语音、视频聊天，群聊功能。",
+      "updateLog": "v8.0.3\n修复已知问题。",
+      "tags": [
+        "聊天",
+        "社交",
+        "通讯"
+      ],
+      "browserUrl": "https://example.com/download/chat.apk",
+      "downloadUrl": "https://example.com/download/chat.apk"
+    },
+    {
+      "id": "app_004",
+      "name": "示例游戏中心",
+      "package": "com.example.gamecenter",
+      "version": "5.2.1",
+      "size": "120MB",
+      "category": "游戏",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例游戏中心，汇聚海量精品游戏，一键下载安装。",
+      "updateLog": "v5.2.1\n新增游戏推荐。",
+      "tags": [
+        "游戏",
+        "娱乐",
+        "游戏中心"
+      ],
+      "browserUrl": "https://example.com/download/gamecenter.apk",
+      "downloadUrl": "https://example.com/download/gamecenter.apk"
+    },
+    {
+      "id": "app_005",
+      "name": "示例办公套件",
+      "package": "com.example.office",
+      "version": "6.0.0",
+      "size": "95MB",
+      "category": "办公",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例办公套件，支持文档编辑、表格制作、幻灯片演示。",
+      "updateLog": "v6.0.0\n支持 PDF 导出。",
+      "tags": [
+        "办公",
+        "文档",
+        "效率"
+      ],
+      "browserUrl": "https://example.com/download/office.apk",
+      "downloadUrl": "https://example.com/download/office.apk"
+    },
+    {
+      "id": "app_006",
+      "name": "示例英语学习",
+      "package": "com.example.english",
+      "version": "3.5.0",
+      "size": "45MB",
+      "category": "学习",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例英语学习 APP，涵盖单词、语法、听力、口语训练。",
+      "updateLog": "v3.5.0\n新增口语 AI 评测。",
+      "tags": [
+        "学习",
+        "英语",
+        "教育"
+      ],
+      "browserUrl": "https://example.com/download/english.apk",
+      "downloadUrl": "https://example.com/download/english.apk"
+    },
+    {
+      "id": "app_007",
+      "name": "示例系统清理",
+      "package": "com.example.cleaner",
+      "version": "4.0.2",
+      "size": "18MB",
+      "category": "系统",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例系统清理工具，一键清理垃圾文件，加速手机运行。",
+      "updateLog": "v4.0.2\n优化清理算法。",
+      "tags": [
+        "系统",
+        "清理",
+        "优化"
+      ],
+      "browserUrl": "https://example.com/download/cleaner.apk",
+      "downloadUrl": "https://example.com/download/cleaner.apk"
+    },
+    {
+      "id": "app_008",
+      "name": "示例短视频",
+      "package": "com.example.video",
+      "version": "12.0.0",
+      "size": "75MB",
+      "category": "娱乐",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例短视频 APP，海量精彩短视频， endless 刷不停。",
+      "updateLog": "v12.0.0\n全新推荐算法。",
+      "tags": [
+        "视频",
+        "娱乐",
+        "短视频"
+      ],
+      "browserUrl": "https://example.com/download/video.apk",
+      "downloadUrl": "https://example.com/download/video.apk"
+    },
+    {
+      "id": "app_009",
+      "name": "示例文件管理器",
+      "package": "com.example.filemanager",
+      "version": "7.1.0",
+      "size": "22MB",
+      "category": "工具",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例文件管理器，支持本地文件浏览、压缩解压、云端同步。",
+      "updateLog": "v7.1.0\n支持 ZIP 解压。",
+      "tags": [
+        "工具",
+        "文件",
+        "管理"
+      ],
+      "browserUrl": "https://example.com/download/filemanager.apk",
+      "downloadUrl": "https://example.com/download/filemanager.apk"
+    },
+    {
+      "id": "app_010",
+      "name": "示例计算器",
+      "package": "com.example.calculator",
+      "version": "1.5.0",
+      "size": "8MB",
+      "category": "工具",
+      "icon": "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png",
+      "screenshots": [
+        "https://www.gstatic.com/android/market_images/icons/gm_48px/google_play.png"
+      ],
+      "description": "示例计算器，支持科学计算、单位换算、汇率转换。",
+      "updateLog": "v1.5.0\n新增汇率转换。",
+      "tags": [
+        "工具",
+        "计算",
+        "实用"
+      ],
+      "browserUrl": "https://example.com/download/calculator.apk",
+      "downloadUrl": "https://example.com/download/calculator.apk"
+    }
+  ],
+  "announcement": {
+    "open": true,
+    "forceRead": true,
+    "readSeconds": 5,
+    "title": "狗尾草 Setaria",
+    "content": "欢迎使用狗尾草。\n本应用为软件资源库客户端。\n请注意软件来源和使用风险。\n所有软件/资源均为claude自调AI自动寻找，代表着所有资源来源于网络。\n此应用内的资源会包含R18/R18G内容⚠️\n以防失联请务必加入官方TG频道@mu0721或QQ群1127978865(频道内更多软件)"
+  },
+  "update": {
+    "open": false,
+    "minRunVersion": "1.0",
+    "latestVersion": "1.0",
+    "forceBelowMin": false,
+    "forceAll": false,
+    "title": "发现新版本",
+    "content": "当前已经是最新版本。",
+    "buttonText": "立即更新",
+    "buttonUrl": "https://example.com/"
+  },
+  "ticket": {
+    "open": true,
+    "password": "12345",
+    "title": "访问验证",
+    "subtitle": "请输入访问密码",
+    "showRemember": true
+  }
+}
